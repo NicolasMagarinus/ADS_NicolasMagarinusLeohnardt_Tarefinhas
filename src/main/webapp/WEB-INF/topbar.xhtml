@@ -1,0 +1,40 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <div class="layout-topbar">
+        <a href="#" id="layout-menu-btn" class="menu-btn">
+            <i class="pi pi-bars"/>
+        </a>
+
+        <div class="layout-topbar-menu-wrapper">
+            <h:form id="topbarForm">
+                <ul class="topbar-menu fadeInDown">
+                    <li class="profile-item">
+                        <a href="#">
+                            <p:graphicImage name="images/avatar.png" library="manhattan-layout"/>
+                            <span class="topbar-item-name profile-name">#{usuarioLogado.usuario.nome}</span>
+                        </a>
+
+                        <ul class="fadeInDown animated">
+                            <li role="menuitem">
+                                <h:commandLink id="lnkSair" action="#{logoutController.sair}">
+                                    <i class="pi pi-fw pi-sign-out"/>
+                                    <span>Sair</span>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </h:form>
+
+            <a href="#" class="topbar-menu-btn">
+                <p:graphicImage name="images/avatar.png" library="manhattan-layout"/>
+            </a>
+        </div>
+    </div>
+
+</ui:composition>

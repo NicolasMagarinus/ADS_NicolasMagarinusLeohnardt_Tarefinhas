@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <!--
+        PÁGINA PROVISÓRIA: existe só para o login ter para onde ir (LoginController.PAGINA_INICIAL).
+        Quando o Dashboard real for adicionado, este arquivo é simplesmente substituído por ele.
+    -->
+    <ui:define name="title">Início</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h3>Olá, #{usuarioLogado.usuario.nome}!</h3>
+            <p>Você está autenticado como <strong>#{usuarioLogado.usuario.email}</strong>
+                (<h:outputText value="administrador" rendered="#{usuarioLogado.admin}"/><h:outputText value="usuário" rendered="#{!usuarioLogado.admin}"/>).</p>
+            <p>Use o menu do avatar, no canto superior direito, para sair.</p>
+        </div>
+    </ui:define>
+
+</ui:composition>
