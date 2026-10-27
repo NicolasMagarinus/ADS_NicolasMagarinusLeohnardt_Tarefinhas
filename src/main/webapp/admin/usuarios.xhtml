@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Usuários</ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmUsuarios">
+            <div class="card">
+                <h3>Usuários</h3>
+                <p>Usuários bloqueados não conseguem entrar no sistema. Os dados das contas são mantidos.</p>
+
+                <p:dataTable id="tblUsuarios" value="#{adminUsuariosController.usuarios}" var="u" rowKey="#{u.id}"
+                             paginator="true" rows="15" paginatorPosition="bottom"
+                             emptyMessage="Nenhum usuário.">
+                    <p:column headerText="Nome" sortBy="#{u.nome}" filterBy="#{u.nome}" filterMatchMode="contains">
+                        #{u.nome}
+                    </p:column>
+                    <p:column headerText="E-mail" sortBy="#{u.email}" filterBy="#{u.email}" filterMatchMode="contains">
+                        #{u.email}
+                    </p:column>
+                    <p:column headerText="Papel" sortBy="#{u.papel}" style="width:110px">
+                        <p:tag value="#{u.admin ? 'Admin' : 'Usuário'}" severity="#{u.admin ? 'warning' : 'info'}"/>
+                    </p:column>
+                    <p:column headerText="Situação" sortBy="#{u.ativo}" style="width:120px">
+                        <p:tag value="#{u.ativo ? 'Ativo' : 'Bloqueado'}" severity="#{u.ativo ? 'success' : 'danger'}"/>
+                    </p:column>
+                    <p:column headerText="Cadastro" sortBy="#{u.criadoEm}" style="width:130px">
+                        <h:outputText value="#{u.criadoEm}">
+                            <f:convertDateTime type="offsetDateTime" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ação" style="width:150px; text-align:center">
+                        <p:commandButton value="#{u.ativo ? 'Bloquear' : 'Desbloquear'}"
+                                         icon="pi #{u.ativo ? 'pi-lock' : 'pi-lock-open'}"
+                                         styleClass="#{u.ativo ? 'ui-button-danger ui-button-outlined' : 'ui-button-success ui-button-outlined'}"
+                                         actionListener="#{adminUsuariosController.alternarAtivo(u)}"
+                                         rendered="#{not adminUsuariosController.euMesmo(u)}"
+                                         process="@this" update="tblUsuarios">
+                            <p:confirm header="Confirmar"
+                                       message="#{u.ativo ? 'Bloquear' : 'Desbloquear'} #{u.nome}?"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                        <h:outputText value="(você)" rendered="#{adminUsuariosController.euMesmo(u)}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -16,6 +16,8 @@
             <h:form id="menuform">
                 <pm:menu widgetVar="ManhattanMenuWidget">
                     <p:menuitem id="mnuDashboard" value="Início" icon="pi pi-fw pi-home" outcome="/app/dashboard"/>
+                    <p:menuitem id="mnuUsuarios" value="Usuários" icon="pi pi-fw pi-users" outcome="/admin/usuarios"
+                                rendered="#{usuarioLogado.admin}"/>
                 </pm:menu>
             </h:form>
         </div>

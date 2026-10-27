@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -79,6 +80,24 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
                 .setParameter("email", emailNormalizado)
                 .getSingleResult();
         return total > 0;
+    }
+
+    public List<Usuario> listarTodos() {
+        return em.createQuery("SELECT u FROM Usuario u ORDER BY u.nome", Usuario.class).getResultList();
+    }
+
+    public void alterarAtivo(Usuario admin, Long usuarioId, boolean ativo) {
+        if (admin == null || !admin.isAdmin()) {
+            throw new RegraNegocioException("Apenas administradores podem fazer isso.");
+        }
+        if (!ativo && usuarioId != null && usuarioId.equals(admin.getId())) {
+            throw new RegraNegocioException("Você não pode bloquear a si mesmo.");
+        }
+        Usuario usuario = em.find(Usuario.class, usuarioId);
+        if (usuario == null) {
+            throw new RegraNegocioException("Usuário não encontrado.");
+        }
+        usuario.setAtivo(ativo);
     }
 
     private static void validarNovaSenha(String senha, String confirmacao) {

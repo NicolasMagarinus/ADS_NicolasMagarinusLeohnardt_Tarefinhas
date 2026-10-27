@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui"
+      lang="pt-BR">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        </f:facet>
+        <title>Página não encontrada - TodoList</title>
+    </h:head>
+
+    <h:body styleClass="exception-body">
+        <div class="exception-panel">
+            <div class="exception-panel-content">
+                <h1>404</h1>
+                <h2>Página não encontrada</h2>
+                <p class="information-text">O endereço acessado não existe ou foi removido.</p>
+                <p:linkButton value="Voltar para o início" icon="pi pi-home" outcome="/app/dashboard"/>
+            </div>
+        </div>
+    </h:body>
+
+    <h:outputStylesheet name="css/primeicons.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/primeflex.min.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/layout-cyan-deeporange.css" library="manhattan-layout"/>
+</html>
