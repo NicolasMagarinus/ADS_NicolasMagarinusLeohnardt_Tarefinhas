@@ -48,7 +48,6 @@
             <version>${flyway.version}</version>
         </dependency>
 
-        <!-- O driver fica em glassfish7/glassfish/domains/domain1/lib (ver README) -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

@@ -41,7 +41,7 @@
         ===== Conexão com o PostgreSQL =====
         Pool de conexões criado pelo servidor no deploy (padrão Jakarta EE).
         Ajuste servidor/porta/banco/usuário/senha se forem diferentes na sua máquina.
-        O driver JDBC precisa estar em glassfish7/glassfish/domains/domain1/lib (ver README).
+        O driver JDBC precisa estar no diretório lib do domínio GlassFish (ver README).
     -->
     <data-source>
         <name>java:app/jdbc/todolist</name>

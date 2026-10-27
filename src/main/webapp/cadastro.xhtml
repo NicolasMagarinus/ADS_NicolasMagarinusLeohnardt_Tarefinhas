@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui"
+      lang="pt-BR">
+
+    <f:metadata>
+        <f:viewAction action="#{loginController.verificarJaLogado}"/>
+    </f:metadata>
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        </f:facet>
+        <title>Criar conta - TodoList</title>
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <h:form id="frmCadastro">
+            <div class="login-panel">
+                <div class="grid">
+                    <div class="col-12 lg:col-6 left-side">
+                        <p:graphicImage name="images/login/login-photo.png" library="manhattan-layout" class="login-image"/>
+                    </div>
+
+                    <div class="col-12 lg:col-6 right-side ui-fluid">
+                        <div class="col-12 text-center">
+                            <h3>TodoList</h3>
+                            <h2>Crie sua conta</h2>
+                        </div>
+
+                        <div class="col-12">
+                            <p:messages id="msgs" showDetail="false" closable="true"/>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="input-wrapper ui-input-icon-left">
+                                <i class="pi pi-id-card"></i>
+                                <p:inputText id="nome" value="#{cadastroController.nome}" maxlength="100"
+                                             required="true" requiredMessage="Informe o nome."
+                                             placeholder="Nome" autocomplete="name"/>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="input-wrapper ui-input-icon-left">
+                                <i class="pi pi-envelope"></i>
+                                <p:inputText id="email" value="#{cadastroController.email}" maxlength="150"
+                                             required="true" requiredMessage="Informe o e-mail."
+                                             validatorMessage="E-mail inválido."
+                                             placeholder="E-mail" autocomplete="email">
+                                    <f:validateRegex pattern="^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="input-wrapper ui-input-icon-left">
+                                <i class="pi pi-lock"></i>
+                                <p:password id="senha" value="#{cadastroController.senha}"
+                                            required="true" requiredMessage="Informe a senha."
+                                            validatorMessage="A senha deve ter entre 8 e 100 caracteres."
+                                            feedback="true" promptLabel="Mínimo de 8 caracteres"
+                                            weakLabel="Fraca" goodLabel="Média" strongLabel="Forte"
+                                            placeholder="Senha (mínimo 8 caracteres)" autocomplete="new-password">
+                                    <f:validateLength minimum="8" maximum="100"/>
+                                </p:password>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="input-wrapper ui-input-icon-left">
+                                <i class="pi pi-lock"></i>
+                                <p:password id="confirmacao" value="#{cadastroController.confirmacao}"
+                                            required="true" requiredMessage="Confirme a senha."
+                                            placeholder="Confirme a senha" autocomplete="new-password"/>
+                            </div>
+                        </div>
+
+                        <div class="col-12 button-container">
+                            <p:commandButton id="btnCadastrar" value="Criar conta" icon="pi pi-user-plus"
+                                             ajax="false" action="#{cadastroController.cadastrar}"/>
+                        </div>
+
+                        <div class="col-12 link-alternativo">
+                            Já tem conta?
+                            <h:link outcome="/login" value="Entrar"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+
+    <h:outputStylesheet name="css/primeicons.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/primeflex.min.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/layout-cyan-deeporange.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/app.css"/>
+</html>

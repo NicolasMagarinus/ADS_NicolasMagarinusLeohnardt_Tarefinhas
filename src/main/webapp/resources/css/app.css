@@ -1,2 +1,4 @@
-/* Estilos próprios do TodoList (complementam o tema Manhattan).
-   O login e o logout usam apenas o tema; as demais telas acrescentam suas regras aqui. */
+.login-panel .link-alternativo {
+    margin-top: 1rem;
+    text-align: center;
+}
