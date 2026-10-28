@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Tarefa</ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="id" value="#{tarefaDetalheController.id}"
+                         converterMessage="Tarefa não encontrada."/>
+            <f:viewAction action="#{tarefaDetalheController.carregar}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmTarefa" rendered="#{not empty tarefaDetalheController.tarefa}">
+            <div class="card">
+                <h3>#{tarefaDetalheController.nova ? 'Nova tarefa' : tarefaDetalheController.tarefa.titulo}</h3>
+
+                <p:tabView id="abas">
+                    <p:tab id="abaDados" title="Dados">
+                        <div class="ui-fluid formgrid grid">
+                            <div class="field col-12">
+                                <p:outputLabel for="titulo" value="Título"/>
+                                <p:inputText id="titulo" value="#{tarefaDetalheController.tarefa.titulo}"
+                                             maxlength="150" required="true"
+                                             requiredMessage="Informe o título da tarefa."
+                                             disabled="#{not tarefaDetalheController.podeEditar}"/>
+                            </div>
+                            <div class="field col-12">
+                                <p:outputLabel for="descricao" value="Descrição"/>
+                                <p:inputTextarea id="descricao" value="#{tarefaDetalheController.tarefa.descricao}"
+                                                 rows="4" autoResize="true"
+                                                 disabled="#{not tarefaDetalheController.podeEditar}"/>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="prioridade" value="Prioridade"/>
+                                <p:selectOneButton id="prioridade" value="#{tarefaDetalheController.tarefa.prioridade}"
+                                                   required="true" requiredMessage="Escolha a prioridade."
+                                                   disabled="#{not tarefaDetalheController.podeEditar}">
+                                    <f:selectItems value="#{tarefaDetalheController.prioridades}" var="pr"
+                                                   itemLabel="#{pr.descricao}" itemValue="#{pr}"/>
+                                </p:selectOneButton>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="status" value="Status"/>
+                                <p:selectOneButton id="status" value="#{tarefaDetalheController.tarefa.status}"
+                                                   rendered="#{not tarefaDetalheController.nova}"
+                                                   disabled="#{not tarefaDetalheController.podeEditar}">
+                                    <f:selectItems value="#{tarefaDetalheController.statusDisponiveis}" var="s"
+                                                   itemLabel="#{s.descricao}" itemValue="#{s}"/>
+                                </p:selectOneButton>
+                                <h:outputText value="A fazer (tarefas novas sempre começam assim)"
+                                              rendered="#{tarefaDetalheController.nova}"/>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="vencimento" value="Vencimento (opcional)"/>
+                                <p:datePicker id="vencimento" value="#{tarefaDetalheController.tarefa.dataVencimento}"
+                                              pattern="dd/MM/yyyy" locale="pt_BR" showIcon="true" showButtonBar="true"
+                                              disabled="#{not tarefaDetalheController.podeEditar}"/>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="categoria" value="Categoria (opcional)"/>
+                                <p:selectOneMenu id="categoria" value="#{tarefaDetalheController.tarefa.categoria}"
+                                                 converter="categoriaConverter"
+                                                 disabled="#{not tarefaDetalheController.podeEditar}">
+                                    <f:selectItem itemLabel="Sem categoria" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{tarefaDetalheController.categorias}" var="c"
+                                                   itemLabel="#{c.nome}" itemValue="#{c}"/>
+                                </p:selectOneMenu>
+                                <h:link outcome="/app/organizacao" value="Gerenciar categorias"
+                                        rendered="#{tarefaDetalheController.podeEditar}"/>
+                            </div>
+                            <h:panelGroup layout="block" styleClass="field col-12"
+                                          rendered="#{not tarefaDetalheController.nova}">
+                                <small>Criada em
+                                    <h:outputText value="#{tarefaDetalheController.tarefa.criadoEm}">
+                                        <f:convertDateTime type="offsetDateTime" pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                    <h:outputText rendered="#{tarefaDetalheController.tarefa.concluida}"
+                                                  value=" · concluída em "/>
+                                    <h:outputText value="#{tarefaDetalheController.tarefa.concluidoEm}"
+                                                  rendered="#{tarefaDetalheController.tarefa.concluida}">
+                                        <f:convertDateTime type="offsetDateTime" pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                </small>
+                            </h:panelGroup>
+                        </div>
+                    </p:tab>
+                </p:tabView>
+
+                <div class="form-acoes">
+                    <p:commandButton id="btnSalvar" value="Salvar" icon="pi pi-save" ajax="false"
+                                     action="#{tarefaDetalheController.salvar}"
+                                     rendered="#{tarefaDetalheController.podeEditar}"/>
+                    <p:linkButton id="btnVoltar" value="Voltar" icon="pi pi-arrow-left" outcome="/app/tarefas"
+                                  styleClass="ui-button-secondary"/>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -21,7 +21,7 @@ import java.io.IOException;
 public class LoginController {
 
     /** Página aberta depois do login. */
-    public static final String PAGINA_INICIAL = "/app/dashboard.xhtml";
+    public static final String PAGINA_INICIAL = "/app/tarefas.xhtml";
 
     @Inject
     private SecurityContext securityContext;
@@ -55,13 +55,10 @@ public class LoginController {
         AuthenticationStatus status = securityContext.authenticate(
                 (HttpServletRequest) ec.getRequest(),
                 (HttpServletResponse) ec.getResponse(),
-                // newAuthentication(false): se o usuário tinha tentado abrir uma página protegida,
-                // o Jakarta Security o leva de volta para ela (com true, essa página seria esquecida)
                 AuthenticationParameters.withParams().credential(credencial).newAuthentication(false));
 
         switch (status) {
             case SEND_CONTINUE:
-                // O Jakarta Security já redirecionou para a página que o usuário tinha pedido
                 contexto.responseComplete();
                 return null;
             case SUCCESS:

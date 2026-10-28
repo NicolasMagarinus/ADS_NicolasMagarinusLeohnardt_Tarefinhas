@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Organização</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h3>Categorias</h3>
+            <p:dataTable id="tblCategorias" value="#{organizacaoController.categorias}" var="cat"
+                         rowKey="#{cat.id}" emptyMessage="Nenhuma categoria cadastrada.">
+                <f:facet name="header">
+                    <p:commandButton id="btnNovaCategoria" value="Nova categoria" icon="pi pi-plus"
+                                     actionListener="#{organizacaoController.novaCategoria}"
+                                     update=":dlgCategoria:frmCategoria" process="@this"
+                                     oncomplete="PF('dlgCategoria').show()"/>
+                </f:facet>
+                <p:column headerText="Cor" style="width:80px; text-align:center">
+                    <span class="cor-amostra" style="background:#{cat.cor}"></span>
+                </p:column>
+                <p:column headerText="Nome" sortBy="#{cat.nome}">
+                    <span class="chip" style="background:#{cat.cor}">#{cat.nome}</span>
+                </p:column>
+                <p:column headerText="Ações" style="width:140px; text-align:center">
+                    <p:commandButton icon="pi pi-pencil" title="Editar"
+                                     styleClass="rounded-button ui-button-flat"
+                                     actionListener="#{organizacaoController.editarCategoria(cat)}"
+                                     update=":dlgCategoria:frmCategoria" process="@this"
+                                     oncomplete="PF('dlgCategoria').show()"/>
+                    <p:commandButton icon="pi pi-trash" title="Excluir"
+                                     styleClass="rounded-button ui-button-flat ui-button-danger"
+                                     actionListener="#{organizacaoController.excluirCategoria(cat)}"
+                                     update="tblCategorias" process="@this">
+                        <p:confirm header="Excluir categoria"
+                                   message="Excluir a categoria #{cat.nome}? As tarefas dela ficarão sem categoria."
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </div>
+
+        <p:dialog id="dlgCategoria" widgetVar="dlgCategoria" modal="true" resizable="false" width="420"
+                  header="#{empty organizacaoController.categoria.id ? 'Nova categoria' : 'Editar categoria'}">
+            <h:form id="frmCategoria">
+                <div class="ui-fluid formgrid grid">
+                    <div class="field col-12">
+                        <p:outputLabel for="nome" value="Nome"/>
+                        <p:inputText id="nome" value="#{organizacaoController.categoria.nome}" maxlength="50"
+                                     required="true" requiredMessage="Informe o nome da categoria."/>
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="cor" value="Cor"/>
+                        <p:colorPicker id="cor" value="#{organizacaoController.categoria.cor}"/>
+                    </div>
+                </div>
+                <div class="form-acoes">
+                    <p:commandButton id="btnSalvarCategoria" value="Salvar" icon="pi pi-save"
+                                     actionListener="#{organizacaoController.salvarCategoria}"
+                                     update="@form :tblCategorias"
+                                     oncomplete="if (args &amp;&amp; args.salvo) PF('dlgCategoria').hide()"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" type="button"
+                                     styleClass="ui-button-secondary" onclick="PF('dlgCategoria').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <h:form id="frmConfirmacao">
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

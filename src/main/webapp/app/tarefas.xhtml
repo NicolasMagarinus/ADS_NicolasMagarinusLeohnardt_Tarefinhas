@@ -1,0 +1,135 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Tarefas</ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmTarefas">
+            <div class="card">
+                <div class="flex justify-content-between align-items-center">
+                    <h3>Minhas tarefas</h3>
+                    <p:linkButton id="btnNova" value="Nova tarefa" icon="pi pi-plus" outcome="/app/tarefa"/>
+                </div>
+
+                <p:fieldset legend="Filtros" toggleable="true" styleClass="filtros">
+                    <div class="ui-fluid formgrid grid">
+                        <div class="field col-12 md:col-3">
+                            <p:outputLabel for="texto" value="Buscar"/>
+                            <p:inputText id="texto" value="#{tarefasController.filtro.texto}"
+                                         placeholder="Título ou descrição">
+                                <p:ajax event="keyup" delay="400" listener="#{tarefasController.filtrar}"
+                                        update="tblTarefas"/>
+                            </p:inputText>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <p:outputLabel for="status" value="Status"/>
+                            <p:selectOneMenu id="status" value="#{tarefasController.filtro.status}">
+                                <f:selectItem itemLabel="Todos" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{tarefasController.statusDisponiveis}" var="s"
+                                               itemLabel="#{s.descricao}" itemValue="#{s}"/>
+                                <p:ajax listener="#{tarefasController.filtrar}" update="tblTarefas"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <p:outputLabel for="prioridade" value="Prioridade"/>
+                            <p:selectOneMenu id="prioridade" value="#{tarefasController.filtro.prioridade}">
+                                <f:selectItem itemLabel="Todas" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{tarefasController.prioridades}" var="pr"
+                                               itemLabel="#{pr.descricao}" itemValue="#{pr}"/>
+                                <p:ajax listener="#{tarefasController.filtrar}" update="tblTarefas"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <p:outputLabel for="categoria" value="Categoria"/>
+                            <p:selectOneMenu id="categoria" value="#{tarefasController.filtro.categoriaId}">
+                                <f:selectItem itemLabel="Todas" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{tarefasController.categorias}" var="c"
+                                               itemLabel="#{c.nome}" itemValue="#{c.id}"/>
+                                <p:ajax listener="#{tarefasController.filtrar}" update="tblTarefas"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="field col-12 md:col-3 flex align-items-end gap-2">
+                            <p:selectBooleanCheckbox id="soAtrasadas" value="#{tarefasController.filtro.soAtrasadas}"
+                                                     itemLabel="Só atrasadas">
+                                <p:ajax listener="#{tarefasController.filtrar}" update="tblTarefas"/>
+                            </p:selectBooleanCheckbox>
+                        </div>
+                    </div>
+                    <p:commandButton id="btnLimpar" value="Limpar filtros" icon="pi pi-filter-slash"
+                                     styleClass="ui-button-secondary ui-button-flat"
+                                     actionListener="#{tarefasController.limparFiltros}"
+                                     process="@this" update="@form"/>
+                </p:fieldset>
+
+                <p:dataTable id="tblTarefas" value="#{tarefasController.modelo}" var="t"
+                             lazy="true" paginator="true" rows="10" rowsPerPageTemplate="10,25,50"
+                             paginatorPosition="bottom"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowStyleClass="#{t.atrasada ? 'tarefa-atrasada' : (t.concluida ? 'tarefa-concluida' : '')}"
+                             emptyMessage="Nenhuma tarefa encontrada." styleClass="mt-3">
+                    <p:column headerText="" style="width:56px; text-align:center">
+                        <p:commandButton icon="pi pi-check" title="Concluir" rendered="#{not t.concluida}"
+                                         styleClass="rounded-button ui-button-outlined ui-button-success"
+                                         actionListener="#{tarefasController.concluir(t)}"
+                                         process="@this" update="tblTarefas"/>
+                        <p:commandButton icon="pi pi-replay" title="Reabrir" rendered="#{t.concluida}"
+                                         styleClass="rounded-button ui-button-flat ui-button-secondary"
+                                         actionListener="#{tarefasController.reabrir(t)}"
+                                         process="@this" update="tblTarefas"/>
+                    </p:column>
+                    <p:column headerText="Título" sortBy="#{t.titulo}">
+                        <h:link outcome="/app/tarefa" styleClass="titulo">
+                            <f:param name="id" value="#{t.id}"/>
+                            #{t.titulo}
+                        </h:link>
+                    </p:column>
+                    <p:column headerText="Categoria" style="width:160px">
+                        <h:panelGroup rendered="#{not empty t.categoria}">
+                            <span class="chip" style="background:#{t.categoria.cor}">#{t.categoria.nome}</span>
+                        </h:panelGroup>
+                    </p:column>
+                    <p:column headerText="Prioridade" sortBy="#{t.prioridade}" style="width:120px">
+                        <span class="prioridade prioridade-#{t.prioridade}">#{t.prioridade.descricao}</span>
+                    </p:column>
+                    <p:column headerText="Status" sortBy="#{t.status}" style="width:120px">
+                        #{t.status.descricao}
+                    </p:column>
+                    <p:column headerText="Vencimento" sortBy="#{t.dataVencimento}" style="width:145px">
+                        <h:outputText value="#{t.dataVencimento}" styleClass="vencimento">
+                            <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        <h:outputText value=" (atrasada)" rendered="#{t.atrasada}" styleClass="vencimento"/>
+                    </p:column>
+                    <p:column headerText="Criada em" sortBy="#{t.criadoEm}" style="width:125px">
+                        <h:outputText value="#{t.criadoEm}">
+                            <f:convertDateTime type="offsetDateTime" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ações" style="width:110px; text-align:center">
+                        <p:linkButton icon="pi pi-pencil" title="Abrir" outcome="/app/tarefa"
+                                      styleClass="rounded-button ui-button-flat">
+                            <f:param name="id" value="#{t.id}"/>
+                        </p:linkButton>
+                        <p:commandButton icon="pi pi-trash" title="Excluir"
+                                         styleClass="rounded-button ui-button-flat ui-button-danger"
+                                         actionListener="#{tarefasController.excluir(t)}"
+                                         process="@this" update="tblTarefas">
+                            <p:confirm header="Excluir tarefa" message="Excluir a tarefa &quot;#{t.titulo}&quot;?"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>
