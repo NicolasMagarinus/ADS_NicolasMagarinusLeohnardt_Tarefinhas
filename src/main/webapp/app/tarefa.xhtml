@@ -90,6 +90,35 @@
                             </h:panelGroup>
                         </div>
                     </p:tab>
+                    <p:tab id="abaSubtarefas" title="Subtarefas (#{tarefaDetalheController.subtarefas.size()})"
+                           disabled="#{tarefaDetalheController.nova}">
+                        <h:panelGroup id="pnlSubtarefas" layout="block">
+                            <p:progressBar value="#{tarefaDetalheController.progresso}" displayOnly="true"
+                                           labelTemplate="{value}% concluído"
+                                           rendered="#{not empty tarefaDetalheController.subtarefas}" styleClass="mb-3"/>
+                            <p:dataTable value="#{tarefaDetalheController.subtarefas}" var="s"
+                                         emptyMessage="Nenhuma subtarefa ainda." styleClass="ui-datatable-sm">
+                                <p:column style="width:50px; text-align:center">
+                                    <p:selectBooleanCheckbox value="#{s.concluida}">
+                                        <p:ajax listener="#{tarefaDetalheController.marcar(s)}" process="@this" update="pnlSubtarefas"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <p:column headerText="Subtarefa">
+                                    <h:outputText value="#{s.descricao}" styleClass="#{s.concluida ? 'subtarefa-concluida' : ''}"/>
+                                </p:column>
+                                <p:column style="width:60px; text-align:center" rendered="#{tarefaDetalheController.podeEditar}">
+                                    <p:commandButton icon="pi pi-trash" title="Remover" styleClass="rounded-button ui-button-flat ui-button-danger"
+                                                     actionListener="#{tarefaDetalheController.remover(s)}" process="@this" update="pnlSubtarefas"/>
+                                </p:column>
+                            </p:dataTable>
+                            <h:panelGroup layout="block" styleClass="flex gap-2 mt-3" rendered="#{tarefaDetalheController.podeEditar}">
+                                <p:inputText id="novaSubtarefa" value="#{tarefaDetalheController.novaSubtarefa}" maxlength="150"
+                                             placeholder="Nova subtarefa" styleClass="flex-1"/>
+                                <p:commandButton value="Adicionar" icon="pi pi-plus" actionListener="#{tarefaDetalheController.adicionarSubtarefa}"
+                                                 process="@this novaSubtarefa" update="pnlSubtarefas"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </p:tab>
                 </p:tabView>
 
                 <div class="form-acoes">

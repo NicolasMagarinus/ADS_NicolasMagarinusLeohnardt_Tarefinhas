@@ -4,6 +4,7 @@ import br.upf.todolist.entity.Categoria;
 import br.upf.todolist.entity.Prioridade;
 import br.upf.todolist.entity.StatusTarefa;
 import br.upf.todolist.entity.Tarefa;
+import br.upf.todolist.entity.Subtarefa;
 import br.upf.todolist.entity.Usuario;
 import br.upf.todolist.util.RegraNegocioException;
 import br.upf.todolist.util.Textos;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import br.upf.todolist.util.Textos;
 
 @Stateless
 public class TarefaFacade extends AbstractFacade<Tarefa> {
@@ -89,6 +91,28 @@ public class TarefaFacade extends AbstractFacade<Tarefa> {
             throw new RegraNegocioException(SO_DONO);
         }
         remove(tarefa);
+    }
+
+    public List<Subtarefa> listarSubtarefas(Long tarefaId, Usuario usuario) {
+        return new ArrayList<>(buscarVisivel(tarefaId, usuario).getSubtarefas());
+    }
+
+    public void adicionarSubtarefa(Long tarefaId, String descricao, Usuario usuario) {
+        Tarefa tarefa = buscarVisivel(tarefaId, usuario);
+        String texto = Textos.obrigatorio(descricao, 150,
+                "Informe a descrição da subtarefa.", "A subtarefa deve ter no máximo 150 caracteres.");
+        em.persist(tarefa.adicionarSubtarefa(texto));
+    }
+
+    public void marcarSubtarefa(Long tarefaId, Long subtarefaId, boolean concluida, Usuario usuario) {
+        Tarefa tarefa = buscarVisivel(tarefaId, usuario);
+        tarefa.subtarefa(subtarefaId).orElseThrow(() -> new RegraNegocioException("Subtarefa não encontrada."))
+                .setConcluida(concluida);
+    }
+
+    public void removerSubtarefa(Long tarefaId, Long subtarefaId, Usuario usuario) {
+        Tarefa tarefa = buscarVisivel(tarefaId, usuario);
+        if (!tarefa.removerSubtarefa(subtarefaId)) throw new RegraNegocioException("Subtarefa não encontrada.");
     }
 
     public List<Tarefa> buscar(TarefaFiltro filtro, Usuario usuario, int primeiro, int quantidade,

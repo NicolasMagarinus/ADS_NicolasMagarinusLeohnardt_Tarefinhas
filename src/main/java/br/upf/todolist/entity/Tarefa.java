@@ -17,6 +17,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 
 @Entity
 @Table(name = "tarefa")
@@ -67,6 +73,28 @@ public class Tarefa implements Serializable {
 
     @Column(name = "concluido_em")
     private OffsetDateTime concluidoEm;
+
+    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("ordem ASC, id ASC")
+    private List<Subtarefa> subtarefas = new ArrayList<>();
+
+    public Subtarefa adicionarSubtarefa(String descricao) {
+        Subtarefa s = new Subtarefa();
+        s.setTarefa(this);
+        s.setDescricao(descricao);
+        s.setOrdem(subtarefas.stream().mapToInt(Subtarefa::getOrdem).max().orElse(0) + 1);
+        subtarefas.add(s);
+        return s;
+    }
+    public Optional<Subtarefa> subtarefa(Long id) {
+        return subtarefas.stream().filter(s -> s.getId() != null && s.getId().equals(id)).findFirst();
+    }
+    public boolean removerSubtarefa(Long id) { return subtarefa(id).map(subtarefas::remove).orElse(false); }
+    public long getSubtarefasConcluidas() { return subtarefas.stream().filter(Subtarefa::isConcluida).count(); }
+    public int getProgressoSubtarefas() {
+        return subtarefas.isEmpty() ? 0 : (int) (getSubtarefasConcluidas() * 100 / subtarefas.size());
+    }
+    public List<Subtarefa> getSubtarefas() { return subtarefas; }
 
     public void mudarStatus(StatusTarefa novo, OffsetDateTime agora) {
         if (novo == null || novo == status) return;
