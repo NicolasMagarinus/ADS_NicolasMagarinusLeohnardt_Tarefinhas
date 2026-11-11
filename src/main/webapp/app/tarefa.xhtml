@@ -100,7 +100,7 @@
                                          emptyMessage="Nenhuma subtarefa ainda." styleClass="ui-datatable-sm">
                                 <p:column style="width:50px; text-align:center">
                                     <p:selectBooleanCheckbox value="#{s.concluida}">
-                                        <p:ajax listener="#{tarefaDetalheController.marcar(s)}" process="@this" update="pnlSubtarefas"/>
+                                        <p:ajax listener="#{tarefaDetalheController.marcar(s)}" process="@this" update="@form"/>
                                     </p:selectBooleanCheckbox>
                                 </p:column>
                                 <p:column headerText="Subtarefa">
@@ -108,14 +108,14 @@
                                 </p:column>
                                 <p:column style="width:60px; text-align:center" rendered="#{tarefaDetalheController.podeEditar}">
                                     <p:commandButton icon="pi pi-trash" title="Remover" styleClass="rounded-button ui-button-flat ui-button-danger"
-                                                     actionListener="#{tarefaDetalheController.remover(s)}" process="@this" update="pnlSubtarefas"/>
+                                                     actionListener="#{tarefaDetalheController.remover(s)}" process="@this" update="@form"/>
                                 </p:column>
                             </p:dataTable>
                             <h:panelGroup layout="block" styleClass="flex gap-2 mt-3" rendered="#{tarefaDetalheController.podeEditar}">
                                 <p:inputText id="novaSubtarefa" value="#{tarefaDetalheController.novaSubtarefa}" maxlength="150"
                                              placeholder="Nova subtarefa" styleClass="flex-1"/>
                                 <p:commandButton value="Adicionar" icon="pi pi-plus" actionListener="#{tarefaDetalheController.adicionarSubtarefa}"
-                                                 process="@this novaSubtarefa" update="pnlSubtarefas"/>
+                                                 process="@this novaSubtarefa" update="@form"/>
                             </h:panelGroup>
                         </h:panelGroup>
                     </p:tab>

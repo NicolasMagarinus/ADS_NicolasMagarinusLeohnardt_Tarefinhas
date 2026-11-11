@@ -50,7 +50,7 @@
         <port-number>5432</port-number>
         <database-name>todolist</database-name>
         <user>todolist</user>
-        <password>todolist</password>
+        <password>postgres</password>
         <transactional>true</transactional>
         <initial-pool-size>2</initial-pool-size>
         <max-pool-size>16</max-pool-size>

@@ -8,6 +8,7 @@
     <ui:define name="title">Organização</ui:define>
 
     <ui:define name="content">
+        <h:form id="frmOrganizacao">
         <div class="card">
             <h3>Categorias</h3>
             <p:dataTable id="tblCategorias" value="#{organizacaoController.categorias}" var="cat"
@@ -15,7 +16,7 @@
                 <f:facet name="header">
                     <p:commandButton id="btnNovaCategoria" value="Nova categoria" icon="pi pi-plus"
                                      actionListener="#{organizacaoController.novaCategoria}"
-                                     update=":dlgCategoria:frmCategoria" process="@this"
+                                     update=":frmOrganizacao:dlgCategoria" process="@this"
                                      oncomplete="PF('dlgCategoria').show()"/>
                 </f:facet>
                 <p:column headerText="Cor" style="width:80px; text-align:center">
@@ -28,7 +29,7 @@
                     <p:commandButton icon="pi pi-pencil" title="Editar"
                                      styleClass="rounded-button ui-button-flat"
                                      actionListener="#{organizacaoController.editarCategoria(cat)}"
-                                     update=":dlgCategoria:frmCategoria" process="@this"
+                                     update=":frmOrganizacao:dlgCategoria" process="@this"
                                      oncomplete="PF('dlgCategoria').show()"/>
                     <p:commandButton icon="pi pi-trash" title="Excluir"
                                      styleClass="rounded-button ui-button-flat ui-button-danger"
@@ -44,7 +45,6 @@
 
         <p:dialog id="dlgCategoria" widgetVar="dlgCategoria" modal="true" resizable="false" width="420"
                   header="#{empty organizacaoController.categoria.id ? 'Nova categoria' : 'Editar categoria'}">
-            <h:form id="frmCategoria">
                 <div class="ui-fluid formgrid grid">
                     <div class="field col-12">
                         <p:outputLabel for="nome" value="Nome"/>
@@ -59,19 +59,17 @@
                 <div class="form-acoes">
                     <p:commandButton id="btnSalvarCategoria" value="Salvar" icon="pi pi-save"
                                      actionListener="#{organizacaoController.salvarCategoria}"
-                                     update="@form :tblCategorias"
+                                     update="@form"
                                      oncomplete="if (args &amp;&amp; args.salvo) PF('dlgCategoria').hide()"/>
                     <p:commandButton value="Cancelar" icon="pi pi-times" type="button"
                                      styleClass="ui-button-secondary" onclick="PF('dlgCategoria').hide()"/>
                 </div>
-            </h:form>
         </p:dialog>
 
-        <h:form id="frmConfirmacao">
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
-            </p:confirmDialog>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
+        </p:confirmDialog>
         </h:form>
     </ui:define>
 </ui:composition>

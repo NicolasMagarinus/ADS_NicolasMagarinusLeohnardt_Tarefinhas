@@ -5,18 +5,67 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
 
-    <!--
-        PÁGINA PROVISÓRIA: será substituída pelo dashboard real numa etapa posterior.
-    -->
     <ui:define name="title">Início</ui:define>
 
     <ui:define name="content">
-        <div class="card">
-            <h3>Olá, #{usuarioLogado.usuario.nome}!</h3>
-            <p>Você está autenticado como <strong>#{usuarioLogado.usuario.email}</strong>
-                (<h:outputText value="administrador" rendered="#{usuarioLogado.admin}"/><h:outputText value="usuário" rendered="#{!usuarioLogado.admin}"/>).</p>
-            <p>Use o menu do avatar, no canto superior direito, para sair.</p>
-        </div>
-    </ui:define>
+        <section class="dashboard-page">
+            <div class="dashboard-heading">
+                <div>
+                    <h1>Olá, #{usuarioLogado.usuario.nome}</h1>
+                    <p>Acompanhe suas tarefas e veja o que precisa da sua atenção.</p>
+                </div>
+                <p:linkButton value="Nova tarefa" icon="pi pi-plus" outcome="/app/tarefa" styleClass="dashboard-new-task"/>
+            </div>
 
+            <div class="dashboard-stats">
+                <h:link outcome="/app/tarefas" styleClass="dashboard-stat stat-todo">
+                    <span class="stat-icon pi pi-list" aria-hidden="true"></span>
+                    <span class="stat-label">A fazer</span>
+                    <strong>#{dashboardController.tarefasAFazer}</strong>
+                </h:link>
+                <h:link outcome="/app/tarefas" styleClass="dashboard-stat stat-progress">
+                    <span class="stat-icon pi pi-spinner" aria-hidden="true"></span>
+                    <span class="stat-label">Em andamento</span>
+                    <strong>#{dashboardController.fazendo}</strong>
+                </h:link>
+                <h:link outcome="/app/tarefas" styleClass="dashboard-stat stat-done">
+                    <span class="stat-icon pi pi-check-circle" aria-hidden="true"></span>
+                    <span class="stat-label">Concluídas</span>
+                    <strong>#{dashboardController.concluidas}</strong>
+                </h:link>
+                <h:link outcome="/app/tarefas" styleClass="dashboard-stat stat-late">
+                    <span class="stat-icon pi pi-clock" aria-hidden="true"></span>
+                    <span class="stat-label">Atrasadas</span>
+                    <strong>#{dashboardController.atrasadas}</strong>
+                </h:link>
+            </div>
+
+            <div class="card dashboard-recent-card">
+                <div class="dashboard-section-heading">
+                    <div>
+                        <h2>Tarefas recentes</h2>
+                        <p>Suas últimas tarefas, atualizadas primeiro.</p>
+                    </div>
+                    <h:link outcome="/app/tarefas" value="Ver todas" styleClass="dashboard-all-tasks"/>
+                </div>
+                <p:dataTable value="#{dashboardController.tarefasRecentes}" var="t"
+                             emptyMessage="Você ainda não criou tarefas." styleClass="dashboard-recent-table">
+                    <p:column headerText="Tarefa">
+                        <h:link outcome="/app/tarefa" value="#{t.titulo}" styleClass="dashboard-task-title">
+                            <f:param name="id" value="#{t.id}"/>
+                        </h:link>
+                    </p:column>
+                    <p:column headerText="Status" styleClass="dashboard-status-column">
+                        <span class="dashboard-status status-#{t.status}">#{t.status.descricao}</span>
+                    </p:column>
+                    <p:column headerText="Prazo">
+                        <h:outputText value="#{t.dataVencimento}" rendered="#{not empty t.dataVencimento}">
+                            <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        <h:outputText value="Sem prazo" rendered="#{empty t.dataVencimento}" styleClass="dashboard-no-date"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </section>
+    </ui:define>
 </ui:composition>

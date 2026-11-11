@@ -14,7 +14,7 @@ import jakarta.faces.convert.FacesConverter;
 import jakarta.inject.Inject;
 
 @Dependent
-@FacesConverter(forClass = Categoria.class, managed = true)
+@FacesConverter(value = "categoriaConverter", forClass = Categoria.class, managed = true)
 public class CategoriaConverter implements Converter<Categoria> {
 
     @Inject
