@@ -87,6 +87,22 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.dashboard-chart-card { min-width: 0; padding: 1.25rem; }
+.dashboard-chart-card h2 { margin: 0 0 1rem; color: #263238; font-size: 1.15rem; }
+.dashboard-chart { display: block; width: 100%; }
+.dashboard-chart-empty {
+    display: grid;
+    min-height: 300px;
+    place-items: center;
+    color: #71808a;
+    text-align: center;
+}
 .dashboard-stat {
     display: grid;
     grid-template-columns: 42px 1fr;
@@ -127,6 +143,16 @@
 .status-FAZENDO { background: #e3f2fd; color: #0d47a1; }
 .status-CONCLUIDA { background: #e8f5e9; color: #1b5e20; }
 .dashboard-no-date { color: #71808a; }
+.perfil-page { max-width: 960px; margin: 0 auto; }
+.perfil-page > .card { padding: 1.5rem; }
+.perfil-page h1 { margin: 0; color: #263238; font-size: 1.5rem; }
+.perfil-intro { margin: 0.4rem 0 1.5rem; color: #60717d; }
+.perfil-email { background: #f5f7f9 !important; color: #60717d !important; }
+.perfil-password-section { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e4e9ee; }
+.perfil-password-section h2 { margin: 0; color: #37474f; font-size: 1.05rem; }
+.perfil-password-section h2 span { color: #71808a; font-size: 0.85rem; font-weight: 400; }
+.perfil-password-section > p { margin: 0.35rem 0 1rem; color: #60717d; }
+.perfil-page .form-acoes { flex-wrap: wrap; }
 .exception-body.error, .exception-body.notfound {
     display: grid;
     place-items: center;
@@ -150,6 +176,7 @@
 .exception-body .exception-panel .exception-panel-content .information-text { margin: 0.75rem 0 1.25rem; color: #546570; line-height: 1.6; }
 @media (max-width: 800px) {
     .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dashboard-charts { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
     .dashboard-heading { align-items: flex-start; flex-direction: column; }

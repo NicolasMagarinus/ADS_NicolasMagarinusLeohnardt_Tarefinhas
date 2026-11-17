@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Meu perfil</ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmPerfil">
+            <section class="perfil-page">
+                <div class="card">
+                    <h1>Meu perfil</h1>
+                    <p class="perfil-intro">Atualize seu nome ou defina uma nova senha.</p>
+
+                    <div class="ui-fluid formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <p:outputLabel for="nome" value="Nome"/>
+                            <p:inputText id="nome" value="#{perfilController.nome}" maxlength="100"
+                                         required="true" requiredMessage="Informe o nome."
+                                         autocomplete="name"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <p:outputLabel for="email" value="E-mail"/>
+                            <p:inputText id="email" value="#{usuarioLogado.usuario.email}" readonly="true"
+                                         styleClass="perfil-email"/>
+                        </div>
+                    </div>
+
+                    <div class="perfil-password-section">
+                        <h2>Confirme sua identidade</h2>
+                        <p>Digite sua senha atual para salvar as alterações do perfil.</p>
+                        <div class="ui-fluid formgrid grid">
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="senhaAtual" value="Senha atual"/>
+                                <p:password id="senhaAtual" value="#{perfilController.senhaAtual}"
+                                            required="true" requiredMessage="Informe sua senha atual."
+                                            feedback="false" autocomplete="current-password"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="perfil-password-section">
+                        <h2>Alterar senha <span>(opcional)</span></h2>
+                        <p>Deixe os campos em branco para manter a senha atual. Use de 8 a 100 caracteres.</p>
+                        <div class="ui-fluid formgrid grid">
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="novaSenha" value="Nova senha"/>
+                                <p:password id="novaSenha" value="#{perfilController.novaSenha}"
+                                            feedback="true" promptLabel="Mínimo de 8 caracteres"
+                                            weakLabel="Fraca" goodLabel="Média" strongLabel="Forte"
+                                            autocomplete="new-password"/>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <p:outputLabel for="confirmacao" value="Confirme a nova senha"/>
+                                <p:password id="confirmacao" value="#{perfilController.confirmacao}"
+                                            feedback="false" autocomplete="new-password"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-acoes">
+                        <p:commandButton id="btnSalvar" value="Salvar alterações" icon="pi pi-check"
+                                         action="#{perfilController.salvar}" process="@form" update="@form"/>
+                        <p:button value="Cancelar" icon="pi pi-times" outcome="/app/dashboard"
+                                  styleClass="ui-button-secondary ui-button-outlined"/>
+                    </div>
+                </div>
+            </section>
+        </h:form>
+    </ui:define>
+</ui:composition>

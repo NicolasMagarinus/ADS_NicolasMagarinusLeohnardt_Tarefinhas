@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -72,6 +73,50 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
         usuario.setAtivo(true);
         usuario.setCriadoEm(OffsetDateTime.now());
         create(usuario);
+        return usuario;
+    }
+
+    public Usuario atualizarPerfil(Usuario solicitante, String nome, String senhaAtual,
+            String novaSenha, String confirmacao) {
+        if (solicitante == null || solicitante.getId() == null) {
+            throw new RegraNegocioException("Usuário não encontrado.");
+        }
+        Usuario usuario = em.find(Usuario.class, solicitante.getId());
+        if (usuario == null || !usuario.isAtivo()) {
+            throw new RegraNegocioException("Usuário não encontrado.");
+        }
+
+        String nomeLimpo = Textos.obrigatorio(nome, 100,
+                "Informe o nome.", "O nome deve ter no máximo 100 caracteres.");
+        boolean senhaAtualValida = false;
+        if (senhaAtual != null && !senhaAtual.isEmpty()) {
+            char[] senhaAtualChars = senhaAtual.toCharArray();
+            try {
+                senhaAtualValida = passwordHash.verify(senhaAtualChars, usuario.getSenhaHash());
+            } finally {
+                Arrays.fill(senhaAtualChars, '\0');
+            }
+        }
+        if (!senhaAtualValida) {
+            throw new RegraNegocioException("A senha atual está incorreta.");
+        }
+
+        boolean trocarSenha = novaSenha != null && !novaSenha.isEmpty();
+        if (trocarSenha) {
+            validarNovaSenha(novaSenha, confirmacao);
+        } else if (confirmacao != null && !confirmacao.isEmpty()) {
+            throw new RegraNegocioException("Informe a nova senha para confirmá-la.");
+        }
+
+        usuario.setNome(nomeLimpo);
+        if (trocarSenha) {
+            char[] novaSenhaChars = novaSenha.toCharArray();
+            try {
+                usuario.setSenhaHash(passwordHash.generate(novaSenhaChars));
+            } finally {
+                Arrays.fill(novaSenhaChars, '\0');
+            }
+        }
         return usuario;
     }
 

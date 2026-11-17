@@ -40,6 +40,27 @@
                 </h:link>
             </div>
 
+            <section class="dashboard-charts" aria-label="Gráficos de tarefas">
+                <div class="card dashboard-chart-card">
+                    <h2>Tarefas por status</h2>
+                    <p:chart type="pie" model="#{dashboardController.graficoStatus}"
+                             styleClass="dashboard-chart" style="height:300px"
+                             rendered="#{dashboardController.temTarefas}"/>
+                    <h:outputText value="Crie tarefas para visualizar este gráfico."
+                                  styleClass="dashboard-chart-empty"
+                                  rendered="#{not dashboardController.temTarefas}"/>
+                </div>
+                <div class="card dashboard-chart-card">
+                    <h2>Tarefas por categoria</h2>
+                    <p:chart type="bar" model="#{dashboardController.graficoCategorias}"
+                             styleClass="dashboard-chart" style="height:300px"
+                             rendered="#{dashboardController.temCategorias}"/>
+                    <h:outputText value="Ainda não há tarefas para mostrar por categoria."
+                                  styleClass="dashboard-chart-empty"
+                                  rendered="#{not dashboardController.temCategorias}"/>
+                </div>
+            </section>
+
             <div class="card dashboard-recent-card">
                 <div class="dashboard-section-heading">
                     <div>

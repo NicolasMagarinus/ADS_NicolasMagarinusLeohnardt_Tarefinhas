@@ -21,6 +21,12 @@
 
                         <ul class="fadeInDown animated">
                             <li role="menuitem">
+                                <h:link id="lnkPerfil" outcome="/app/perfil">
+                                    <i class="pi pi-fw pi-user"/>
+                                    <span>Meu perfil</span>
+                                </h:link>
+                            </li>
+                            <li role="menuitem">
                                 <h:commandLink id="lnkSair" action="#{logoutController.sair}">
                                     <i class="pi pi-fw pi-sign-out"/>
                                     <span>Sair</span>

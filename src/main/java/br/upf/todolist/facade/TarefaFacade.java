@@ -19,8 +19,10 @@ import jakarta.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import br.upf.todolist.util.Textos;
 
@@ -131,6 +133,29 @@ public class TarefaFacade extends AbstractFacade<Tarefa> {
         Root<Tarefa> tarefa = consulta.from(Tarefa.class);
         consulta.select(cb.count(tarefa)).where(condicoes(cb, tarefa, filtro, usuario));
         return em.createQuery(consulta).getSingleResult();
+    }
+
+    public Map<StatusTarefa, Long> contarPorStatus(Usuario usuario) {
+        List<Object[]> resultados = em.createQuery(
+                "SELECT t.status, COUNT(t) FROM Tarefa t WHERE t.usuario.id = :usuarioId GROUP BY t.status",
+                Object[].class)
+                .setParameter("usuarioId", usuario.getId())
+                .getResultList();
+        Map<StatusTarefa, Long> totais = new EnumMap<>(StatusTarefa.class);
+        for (Object[] resultado : resultados) {
+            totais.put((StatusTarefa) resultado[0], (Long) resultado[1]);
+        }
+        return totais;
+    }
+
+    public List<ResumoCategoriaTarefas> contarPorCategoria(Usuario usuario) {
+        return em.createQuery(
+                "SELECT NEW br.upf.todolist.facade.ResumoCategoriaTarefas("
+                + "COALESCE(c.nome, 'Sem categoria'), COUNT(t)) "
+                + "FROM Tarefa t LEFT JOIN t.categoria c WHERE t.usuario.id = :usuarioId "
+                + "GROUP BY c.id, c.nome ORDER BY c.nome", ResumoCategoriaTarefas.class)
+                .setParameter("usuarioId", usuario.getId())
+                .getResultList();
     }
 
     private Predicate[] condicoes(CriteriaBuilder cb, Root<Tarefa> tarefa, TarefaFiltro filtro, Usuario usuario) {
